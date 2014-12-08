@@ -1,0 +1,15 @@
+USE DEMO;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS usp_return_comma_dlm_string$$
+CREATE PROCEDURE usp_return_comma_dlm_string(IN input_param INTEGER)
+BEGIN
+	DECLARE PARSE_STRING VARCHAR(1000);
+	SET @PARSE_STRING = NULL;
+	CALL usp_build_comma_dlm_string(input_param, @PARSE_STRING);
+
+	SELECT CAST(@PARSE_STRING AS CHAR(255));
+
+END$$
+DELIMITER ;
