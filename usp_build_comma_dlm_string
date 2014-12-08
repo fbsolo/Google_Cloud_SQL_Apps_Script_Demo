@@ -1,0 +1,36 @@
+USE DEMO;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS usp_build_comma_dlm_string$$
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_build_comma_dlm_string`(N BIGINT, PARSE_STRING VARCHAR(1000))
+
+BEGIN
+
+	DECLARE COMPONENT INT;
+	SET max_sp_recursion_depth = 20;
+
+	IF @PARSE_STRING IS NULL THEN
+		SET @PARSE_STRING = '';
+	END IF;
+
+/*
+	For find_in_set
+
+		http://dev.mysql.com/doc/refman/5.0/en/string-functions.html#function_find-in-set
+
+	make sure to separate the values in the finished strlist parameter (parameter 2)
+	with commas only. Also avoid the start / end parentheses for the strlist parameter.
+*/
+
+	IF N = 0 THEN
+		SET @PARSE_STRING = SUBSTRING(@PARSE_STRING, 1, LENGTH(@PARSE_STRING) - 1);
+	ELSE
+		SET COMPONENT = POWER(2, FLOOR(LOG2(N)));
+		SET @PARSE_STRING = CONCAT(@PARSE_STRING, TRIM(CAST(COMPONENT AS CHAR(15))), ',');
+		SET N = N - COMPONENT;
+		CALL usp_build_comma_dlm_string(N, @PARSE_STRING);
+	END IF;
+
+END$$
+DELIMITER ;
