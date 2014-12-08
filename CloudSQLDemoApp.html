@@ -1,0 +1,153 @@
+<!--
+
+  Article
+
+    http://bitvectors.blogspot.com/2014/12/page1.html
+
+  uses this application . . .
+
+  -->
+
+<HTML>
+  <HEAD>
+    <SCRIPT src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></SCRIPT>
+    <SCRIPT src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></SCRIPT>
+
+    <SCRIPT TYPE="text/javascript">
+
+      function callBack(resultSetArray) {
+
+        //  Build string variable dataTag that jQuery will place after the tr:last
+        //  tr row tag. First, add a row with the original spinner value . . .
+
+        var dataTag = '<tr><td valign="top"><b>Original Integer Value: </b></td><td>';
+        dataTag += $( "#spinner" ).spinner().spinner("value");
+        dataTag += '</td></tr>';
+
+        //  Now add the comma-delimited component integer list. First, the "heading" . . .
+
+        dataTag += '<tr valign="bottom"><td><b>Comma-delimited list of Base-10 \nMultiple-of-two components: </b></td>';
+
+        // The comma-delimited integer list in
+        // resultSetArray[1] will have a leading
+        // <tr> tag. Add the list to dataTag and
+        // delete that <tr> tag . . .
+
+        dataTag += resultSetArray[1].slice(4);
+
+        // Now the two-dimensional list of components.
+        // First, the "heading" . . .
+
+        dataTag += '<tr><td valign="top"><b>Base-10 Multiple-of-Two Components: </b></td></tr>';
+        dataTag += resultSetArray[0] + '</table>';
+
+        // Remember to clean out any existing
+        // result set cells, and then add the
+        // dataTag string . . .
+
+        $('#lastRow').nextAll().remove();
+
+        $('#mainTable tr:last').after(dataTag);
+      }
+
+      function submitData() {
+
+        //  The arrayParam array will become a parameter passed to the returnFormParams
+        //  function in file
+        //
+        //    Code.gs
+        //
+        //  That function will show the query parameter(s) and result set on the
+        //  associated spreadsheet.
+        //
+        //  This statement calls returnFormParams in Code.gs to make the calculations on the
+        //  spreadsheet. The syntax might look a little strange, but when called, function
+        //  returnFormParams returns the Cloud SQL calculation results (as returnParam within
+        //  that function); this line then passes that parameter to function callBack, located
+        //  in this HTML file.
+        //
+        //  Function callBack writes the value(s) in this "invisible" parameter starting
+        //  just after the HTML element at DOM ID location
+        //
+        //    tr:last
+        //
+        //  in the HTML file that this file draws . . .
+
+        var spinner = $( "#spinner" ).spinner();
+        var spinnerVal = spinner.spinner("value");
+
+        google.script.run.withFailureHandler(alertString).withSuccessHandler(callBack).returnFormParams(spinnerVal);
+      }
+
+      //  This jQuery function first resets the spinner to zero,
+      //  and then cleans out the result set HTML values . . .
+
+      $(function() {
+        $("#RESET").click( function() {
+
+          var spinner = $( "#spinner" ).spinner();
+          spinner.spinner( "value", 1 );
+
+          //  Remember to clean out the
+          //  result set cells . . .
+
+          $('#lastRow').nextAll().remove();
+
+          // Clear out the data in the spreadsheet as well
+          // to mirror the web page behavior . . .
+
+          google.script.run.withFailureHandler(alertString).withSuccessHandler().clearSheet();          
+        });
+      });
+
+    </SCRIPT>
+
+  </HEAD>
+
+  <BODY>
+
+    <FORM ID="BigQueryDemoApp">
+
+      <STYLE type="text/css">
+        .tg {border-collapse:collapse;border-spacing:0;border:none;}
+        .tg TD{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+        .tg TH{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+        .tg .tg-SPINNERHEADING{font-weight:bold;font-size:18px;font-family:"Times New Roman", Times, serif !important; text-align:center;}
+        .tg .tg-TITLE{font-weight:bold;font-size:28px;font-family:"Times New Roman", Times, serif !important;text-align:center}
+        .tg .CENTER_DROPDOWN{text-align:center;}
+      </STYLE>
+      <TABLE CLASS="tg" STYLE="undefined;table-layout: fixed; WIDTH: 430px" ID="mainTable">
+        <COLGROUP>
+          <COL STYLE="WIDTH: 250px">
+          <COL STYLE="WIDTH: 300px">
+        </COLGROUP>
+        <TR>
+          <TH CLASS="tg-TITLE" COLSPAN="2">CLOUD SQL<BR>GOOGLE APPS SCRIPT<BR>RECURSION APPLICATION</TH>
+          <TH ROWSPAN="3"></TH>
+        </TR>
+        <TR>
+          <TD CLASS="tg-SPINNERHEADING">Raw Integer to Unpack<BR>Into Base-10 Multiples of Two<BR><BR>Valid Raw Integer Range:<BR>1 to 65535<BR><BR>{ (2 ^ 0) to ((2 ^ 16) - 1) }</TD>
+          <TD></TD>
+        </TR>
+        <TR>
+          <TD COLSPAN="2" ALIGN="RIGHT"><INPUT TYPE="button" ID="SUBMIT" ONCLICK="submitData();" VALUE="SUBMIT"/></TD>
+        </TR>
+        <TR>
+          <TD CLASS="CENTER_DROPDOWN">
+            <INPUT ID="spinner" VALUE="1" />
+              <script type="text/javascript">
+                $('#spinner').spinner({ min: 1, max: 65535, step: 1 });
+              </script>
+          </TD>
+        </TR>
+        <TR>
+          <TD COLSPAN="2" ALIGN="RIGHT"><INPUT TYPE="button" ID="RESET" VALUE="RESET"/></TD>
+        </TR>
+        <TR ID="lastRow">
+          <TD CLASS="CENTER_DROPDOWN" COLSPAN="2" VALIGN="TOP"></TD>
+        </TR>
+      </TABLE>
+
+    </FORM>
+  </BODY>
+</HTML>
