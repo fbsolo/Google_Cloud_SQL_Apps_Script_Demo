@@ -9,15 +9,27 @@
 // spreadsheet, so declare these next
 // variables globally.
 
-// Set variable
+// Use a PropertiesService object to store the
+// relevant database / connection values. Store
+// them here to make it easier to manage them
+// across different situations. The spreadSheetURL
+// value has the specific Google Docs Spreadsheet
+// for this application.
 //
-//   spreadSheetURL
-//
-// to the Google Docs spreadsheet URL
-// value . . .
+// In the setProperty functions, replace the empty
+// string values in the second parameter with the
+// actual database, connection, and spreadsheet
+// URL values . . .
 
-var spreadSheetURL = ' < Place the Google Spreadsheet URL string here >';
-var localSpreadSheet = SpreadsheetApp.openByUrl(spreadSheetURL);
+var scriptProperties = PropertiesService.getScriptProperties();
+
+scriptProperties.setProperty('db', '');
+scriptProperties.setProperty('address', '');
+scriptProperties.setProperty('user', '');
+scriptProperties.setProperty('userPwd', '');
+scriptProperties.setProperty('spreadSheetURL', '');
+
+var localSpreadSheet = SpreadsheetApp.openByUrl(scriptProperties.getProperty('spreadSheetURL'));
 
 function onOpen()
 {  
@@ -85,16 +97,17 @@ function returnFormParams(spinnerVal){
   // functions to write the result set(s) on the spreadsheet
   // and the HTML page.
   //
-  // First, replace the variables in this block with real
-  // values so that this app can actually talk with the
-  // MySQL database . . .
+  // First, use properties from the scriptProperties object
+  // declared / set earlier to set up the database connection
+  // so that this app can actually talk with the MySQL
+  // database . . .
 
-  var db = ' < Place the MySQL database name string here > ';
-  var address = ' < Place the Cloud SQL IP address string here > ';
+  var db = scriptProperties.getProperty('db');
+  var address = scriptProperties.getProperty('address');
   var dbUrl = 'jdbc:mysql://' + address + '/' + db;
 
-  var user = ' < Place the MySQL database user name string here > ';
-  var userPwd = ' < Place the password string for the MySQL database user name here > ';
+  var user = scriptProperties.getProperty('user');
+  var userPwd = scriptProperties.getProperty('userPwd');
 
   // Set up the stored procedure calls . . .
 
