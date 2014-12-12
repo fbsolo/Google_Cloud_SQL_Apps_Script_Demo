@@ -11,24 +11,19 @@
 
 // Use a PropertiesService object to store the
 // relevant database / connection values. Store
-// them here to make it easier to manage them
-// across different situations. The spreadSheetURL
-// value has the specific Google Docs Spreadsheet
-// for this application.
+// values for these properties
 //
-// In the setProperty functions, replace the empty
-// string values in the second parameter with the
-// actual database, connection, and spreadsheet
-// URL values . . .
+//   db (for the MySQL database name)
+//   address (Cloud SQL instance IP address)
+//   user (MySQL database user)
+//   userPwd (MySQL database password)
+//   spreadSheetURL (the URL for the Google Docs Spreadsheet of the application)
+//
+// in
+//
+//   File -> Project Properties -> Script properties
 
 var scriptProperties = PropertiesService.getScriptProperties();
-
-scriptProperties.setProperty('db', '');
-scriptProperties.setProperty('address', '');
-scriptProperties.setProperty('user', '');
-scriptProperties.setProperty('userPwd', '');
-scriptProperties.setProperty('spreadSheetURL', '');
-
 var localSpreadSheet = SpreadsheetApp.openByUrl(scriptProperties.getProperty('spreadSheetURL'));
 
 function onOpen()
