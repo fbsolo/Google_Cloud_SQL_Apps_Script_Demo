@@ -52,6 +52,8 @@
 
       function submitData() {
 
+        var alertString1 = 'The call to returnFromParams() failed . . .';
+
         //  The arrayParam array will become a parameter passed to the returnFormParams
         //  function in file
         //
@@ -76,7 +78,7 @@
         var spinner = $( "#spinner" ).spinner();
         var spinnerVal = spinner.spinner("value");
 
-        google.script.run.withFailureHandler(alertString).withSuccessHandler(callBack).returnFormParams(spinnerVal);
+        google.script.run.withFailureHandler(alertString1).withSuccessHandler(callBack).returnFormParams(spinnerVal);
       }
 
       //  This jQuery function first resets the spinner to zero,
@@ -84,6 +86,8 @@
 
       $(function() {
         $("#RESET").click( function() {
+
+          var alertString2 = 'The call to clearSheet() failed . . .';
 
           var spinner = $( "#spinner" ).spinner();
           spinner.spinner( "value", 1 );
@@ -96,7 +100,7 @@
           // Clear out the data in the spreadsheet as well
           // to mirror the web page behavior . . .
 
-          google.script.run.withFailureHandler(alertString).withSuccessHandler().clearSheet();          
+          google.script.run.withFailureHandler(alertString2).withSuccessHandler().clearSheet();          
         });
       });
 
